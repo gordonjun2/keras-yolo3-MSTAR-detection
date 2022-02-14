@@ -24,7 +24,7 @@ def _main(opt):
         annotation_path = './datasets/trainval_annotation_mstar.txt'
         log_dir = 'logs/000/'
         classes_path = 'model_data/mstar_classes.txt'
-        anchors_path = 'model_data/yolo_anchors.txt'
+        anchors_path = 'model_data/yolo_anchors_mstar.txt'
     else:
         annotation_path = './train.txt'
         log_dir = 'logs/000/'

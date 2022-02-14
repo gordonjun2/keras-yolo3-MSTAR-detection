@@ -25,7 +25,7 @@ tf.compat.v1.disable_eager_execution()
 class YOLO(object):
     _defaults = {
         "model_path": './logs/000/ep078-loss15.398-val_loss15.037.h5',
-        "anchors_path": './model_data/yolo_anchors.txt',
+        "anchors_path": './model_data/yolo_anchors_mstar.txt',
         "classes_path": './model_data/mstar_classes.txt',
         "score" : 0.3,
         "iou" : 0.45,
