@@ -70,7 +70,8 @@ def _main(opt):
                 validation_steps=max(1, num_val//batch_size),
                 epochs=50,
                 initial_epoch=0,
-                callbacks=[logging, checkpoint])
+                callbacks=[logging, checkpoint], 
+                verbose=1)
         if opt.mstar:
             model.save_weights(log_dir + 'mstar_trained_weights_stage_1.h5')
         else:
@@ -92,7 +93,8 @@ def _main(opt):
             validation_steps=max(1, num_val//batch_size),
             epochs=100,
             initial_epoch=50,
-            callbacks=[logging, checkpoint, reduce_lr, early_stopping])
+            callbacks=[logging, checkpoint, reduce_lr, early_stopping],
+            verbose=1)
         if opt.mstar:
             model.save_weights(log_dir + 'mstar_trained_weights_final.h5')
         else:
