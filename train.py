@@ -12,12 +12,20 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, Ear
 from yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
 from yolo3.utils import get_random_data
 
+import argparse
 
-def _main():
-    annotation_path = 'train.txt'
-    log_dir = 'logs/000/'
-    classes_path = 'model_data/voc_classes.txt'
-    anchors_path = 'model_data/yolo_anchors.txt'
+
+def _main(opt):
+    if opt.mstar:
+        annotation_path = './datasets/trainval_annotation_mstar.txt'
+        log_dir = 'logs/000/'
+        classes_path = 'model_data/mstar_classes.txt'
+        anchors_path = 'model_data/yolo_anchors.txt'
+    else:
+        annotation_path = './train.txt'
+        log_dir = 'logs/000/'
+        classes_path = 'model_data/voc_classes.txt'
+        anchors_path = 'model_data/yolo_anchors.txt'
     class_names = get_classes(classes_path)
     num_classes = len(class_names)
     anchors = get_anchors(anchors_path)
@@ -25,12 +33,12 @@ def _main():
     input_shape = (416,416) # multiple of 32, hw
 
     is_tiny_version = len(anchors)==6 # default setting
-    if is_tiny_version:
+    if is_tiny_version and not opt.mstar:
         model = create_tiny_model(input_shape, anchors, num_classes,
             freeze_body=2, weights_path='model_data/tiny_yolo_weights.h5')
     else:
         model = create_model(input_shape, anchors, num_classes,
-            freeze_body=2, weights_path='model_data/yolo_weights.h5') # make sure you know what you freeze
+            freeze_body=2, weights_path='model_data/YOLOv3_Darknet53.h5') # make sure you know what you freeze
 
     logging = TensorBoard(log_dir=log_dir)
     checkpoint = ModelCheckpoint(log_dir + 'ep{epoch:03d}-loss{loss:.3f}-val_loss{val_loss:.3f}.h5',
@@ -63,7 +71,10 @@ def _main():
                 epochs=50,
                 initial_epoch=0,
                 callbacks=[logging, checkpoint])
-        model.save_weights(log_dir + 'trained_weights_stage_1.h5')
+        if opt.mstar:
+            model.save_weights(log_dir + 'mstar_trained_weights_stage_1.h5')
+        else:
+            model.save_weights(log_dir + 'trained_weights_stage_1.h5')
 
     # Unfreeze and continue training, to fine-tune.
     # Train longer if the result is not good.
@@ -82,7 +93,10 @@ def _main():
             epochs=100,
             initial_epoch=50,
             callbacks=[logging, checkpoint, reduce_lr, early_stopping])
-        model.save_weights(log_dir + 'trained_weights_final.h5')
+        if opt.mstar:
+            model.save_weights(log_dir + 'mstar_trained_weights_final.h5')
+        else:
+            model.save_weights(log_dir + 'trained_weights_final.h5')
 
     # Further training if needed.
 
@@ -187,4 +201,12 @@ def data_generator_wrapper(annotation_lines, batch_size, input_shape, anchors, n
     return data_generator(annotation_lines, batch_size, input_shape, anchors, num_classes)
 
 if __name__ == '__main__':
-    _main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--mstar",
+        action="store_true",
+        default=False,
+        help="use MSTAR dataset instead of the other provided",
+    ) 
+    opt = parser.parse_args()
+    _main(opt)
