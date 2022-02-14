@@ -1,6 +1,9 @@
 import sys
 import argparse
-from yolo import YOLO, detect_video
+#from yolo import YOLO, detect_video
+#from yolo_mstar import YOLO, detect_video
+import yolo
+import yolo_mstar
 from PIL import Image
 
 def detect_img(yolo):
@@ -25,23 +28,30 @@ if __name__ == '__main__':
     Command line options
     '''
     parser.add_argument(
+        '--mstar',
+        action="store_true",
+        default=False,
+        help="use MSTAR dataset instead of the other provided",
+    )
+
+    parser.add_argument(
         '--model', type=str,
-        help='path to model weight file, default ' + YOLO.get_defaults("model_path")
+        help='path to model weight file, default ' + yolo.YOLO.get_defaults("model_path")
     )
 
     parser.add_argument(
         '--anchors', type=str,
-        help='path to anchor definitions, default ' + YOLO.get_defaults("anchors_path")
+        help='path to anchor definitions, default ' + yolo.YOLO.get_defaults("anchors_path")
     )
 
     parser.add_argument(
         '--classes', type=str,
-        help='path to class definitions, default ' + YOLO.get_defaults("classes_path")
+        help='path to class definitions, default ' + yolo.YOLO.get_defaults("classes_path")
     )
 
     parser.add_argument(
         '--gpu_num', type=int,
-        help='Number of GPU to use, default ' + str(YOLO.get_defaults("gpu_num"))
+        help='Number of GPU to use, default ' + str(yolo.YOLO.get_defaults("gpu_num"))
     )
 
     parser.add_argument(
@@ -70,8 +80,14 @@ if __name__ == '__main__':
         print("Image detection mode")
         if "input" in FLAGS:
             print(" Ignoring remaining command line arguments: " + FLAGS.input + "," + FLAGS.output)
-        detect_img(YOLO(**vars(FLAGS)))
+        if FLAGS.mstar:
+            detect_img(yolo_mstar.YOLO(**vars(FLAGS)))
+        else:
+            detect_img(yolo.YOLO(**vars(FLAGS)))
     elif "input" in FLAGS:
-        detect_video(YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
+        if FLAGS.mstar:
+            detect_video(yolo_mstar.YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
+        else:
+            detect_video(yolo.YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
     else:
         print("Must specify at least video_input_path.  See usage with --help.")
