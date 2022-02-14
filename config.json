@@ -1,0 +1,12 @@
+{
+    "model" : {
+        "labels":               ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    },
+
+    "train": {
+        "train_image_folder":   "./datasets/MSTAR_detection/VOCdevkit2007/VOC2007/JPEGImages/",
+        "train_annot_folder":   "./datasets/MSTAR_detection/VOCdevkit2007/VOC2007/Annotations/",
+        "cache_name":           "mstar.pkl"
+    }
+
+}
