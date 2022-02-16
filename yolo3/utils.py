@@ -6,6 +6,10 @@ from PIL import Image
 import numpy as np
 from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 
+import random
+from DataAugmentationForObjectDetection.data_aug.data_aug import *
+from DataAugmentationForObjectDetection.data_aug.bbox_util import *
+
 def compose(*funcs):
     """Compose arbitrarily many functions, evaluated left to right.
 
@@ -32,6 +36,15 @@ def letterbox_image(image, size):
 
 def rand(a=0, b=1):
     return np.random.rand()*(b-a) + a
+
+def data_augmentor(image, box):
+    rotate_angle = random.uniform(0, 20)
+    shear_factor = random.uniform(0, 0.2)
+
+    seq = Sequence([RandomRotate(rotate_angle), RandomShear(shear_factor)], [1, 1])
+    img_, bboxes_ = seq(image.copy(), box.copy())
+
+    return img_, bboxes_
 
 def get_random_data(annotation_line, input_shape, random=True, max_boxes=20, jitter=.3, hue=.1, sat=1.5, val=1.5, proc_img=True):
     '''random preprocessing for real-time data augmentation'''
@@ -63,6 +76,8 @@ def get_random_data(annotation_line, input_shape, random=True, max_boxes=20, jit
             box[:, [0,2]] = box[:, [0,2]]*scale + dx
             box[:, [1,3]] = box[:, [1,3]]*scale + dy
             box_data[:len(box)] = box
+
+        image_data, box = data_augmentor(image_data, box_data)
 
         return image_data, box_data
 
