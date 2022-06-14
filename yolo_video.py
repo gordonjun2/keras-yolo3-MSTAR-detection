@@ -86,8 +86,8 @@ if __name__ == '__main__':
             detect_img(yolo.YOLO(**vars(FLAGS)))
     elif "input" in FLAGS:
         if FLAGS.mstar:
-            detect_video(yolo_mstar.YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
+            yolo_mstar.detect_video(yolo_mstar.YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
         else:
-            detect_video(yolo.YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
+            yolo.detect_video(yolo.YOLO(**vars(FLAGS)), FLAGS.input, FLAGS.output)
     else:
         print("Must specify at least video_input_path.  See usage with --help.")

@@ -24,7 +24,7 @@ tf.compat.v1.disable_eager_execution()
 
 class YOLO(object):
     _defaults = {
-        "model_path": './logs/000/ep078-loss15.398-val_loss15.037.h5',
+        "model_path": './logs/000/ep078-loss16.562-val_loss14.732.h5',
         "anchors_path": './model_data/yolo_anchors.txt',
         "classes_path": './model_data/mstar_classes.txt',
         "score" : 0.3,
@@ -46,6 +46,7 @@ class YOLO(object):
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
         self.sess = K.get_session()
+        #self.sess = tf.compat.v1.Session()
         self.boxes, self.scores, self.classes = self.generate()
 
     def _get_class(self):
