@@ -1,3 +1,13 @@
+## NOTE by Gordon
+
+The MSTAR detection dataset can be downloaded from [hunterlew/mstar_deeplearning_project](https://github.com/hunterlew/mstar_deeplearning_project). Look for the folder *mstar_deeplearning_project/detection_and_recognition/core/datasets/VOCdevkit2007/*.
+
+Place the */VOCdevkit2007/..* folders into
+```./keras-yolo3-MSTAR-detection/datasets```.
+
+To train, run
+```python train.py```.
+
 # keras-yolo3
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
